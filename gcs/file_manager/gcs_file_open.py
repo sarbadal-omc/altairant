@@ -54,3 +54,27 @@ def gcs_open(gcs_path: str, mode: str = "r", credentials: storage.credentials.Cr
             blob.upload_from_string(file_obj.getvalue())
  
         file_obj.close()
+
+
+def main():
+    # Example usage
+    from google.oauth2 import service_account
+    gcs_path = "gs://open-file-testing/sftp_logins.json"
+    write_to_path = "gs://open-file-testing/test_write_gcs_open.txt"
+
+    json_key = ("/Users/sarbadal.pal/Library/CloudStorage/OneDrive-OneWorkplace/Documents/"
+               "development-490607-06eae129a3e2.json")
+    creds = service_account.Credentials.from_service_account_file(json_key)
+
+    # Writing to GCS
+    with gcs_open(write_to_path, mode="w", credentials=creds) as f:
+        f.write("Hello, GCS! This is a test write using gcs_open.")
+    
+    # Reading from GCS
+    with gcs_open(gcs_path, mode="r", credentials=creds) as f:
+        content = f.read()
+        print(content)
+
+
+if __name__ == "__main__":
+    main()
