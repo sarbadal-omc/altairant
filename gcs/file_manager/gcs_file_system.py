@@ -40,7 +40,7 @@ class GCSFileSystem:
 def main():
     # Example usage
     from google.oauth2 import service_account
-    gcs_path = "gs://open-file-testing/sftp_logins.json"
+    gcs_path = "gs://open-file-testing/test_file_gcs.txt"
     write_to_path = "gs://open-file-testing/test_write_fileSystem.txt"
 
     json_key = ("/Users/sarbadal.pal/Library/CloudStorage/OneDrive-OneWorkplace/Documents/"
@@ -53,6 +53,9 @@ def main():
     # Writing to GCS
     with gcs_fs.open(write_to_path, mode="w") as f:
         f.write("Hello, GCS! This is a test write.")
+
+    with open("test_write_fileSystem.txt", "r") as f:
+        print(f.read())
     
     # Reading from GCS
     with gcs_fs.open(gcs_path, mode="r") as f:
