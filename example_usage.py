@@ -32,7 +32,7 @@ def example_usage_cloud_duckstore():
     import duckdb
     from google.oauth2 import service_account
 
-    from duckstore.duckstore import (
+    from altairant.gcs.duckstore.duckstore import (
         parse_uri,
         LocalBackend,
         GCSBackend,

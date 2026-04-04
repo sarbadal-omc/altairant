@@ -1,3 +1,9 @@
+"""
+This module provides a DuckDBCloud class that abstracts away the details of 
+using DuckDB with a GCS backend. It allows you to interact with a DuckDB database 
+stored in GCS as if it were local, handling all the downloading, uploading, and 
+session management for you.
+"""
 import duckdb
 import tempfile
 import os
@@ -5,9 +11,20 @@ import shutil
 from contextlib import contextmanager
 from urllib.parse import urlparse
  
+import gcsfs
 from google.cloud import storage
- 
 
+# Assuming this file is located at altairant/gcs/duckstore/duckstore.py, 
+# we want to set the project directory to the root of the repository
+PROJECT_DIR = os.path.dirname(
+    os.path.dirname(
+        os.path.dirname(
+            os.path.abspath(__file__)
+        )
+    )
+)
+
+ 
 class BaseStorageBackend:
     def download(self, local_path: str) -> None:
         raise NotImplementedError
@@ -34,25 +51,33 @@ class LocalBackend(BaseStorageBackend):
         if self.path != local_path:
             shutil.copy(local_path, self.path)
  
- 
+
 class GCSBackend(BaseStorageBackend):
-    def __init__(self, bucket: str, blob_path: str, credentials: storage.credentials.Credentials = None):
-        if credentials:
-            self.client = storage.Client(credentials=credentials)
-        else:
-            self.client = storage.Client()
- 
+    def __init__(self, bucket: str, blob_path: str, credentials: "Credentials" = None, template_path: str = None):
+        self.client = storage.Client(credentials=credentials) if credentials else storage.Client()
+        self.template_path = template_path or os.path.join(PROJECT_DIR, "gcs/duckstore/_temp.duckdb")
         self.bucket = self.client.bucket(bucket)
         self.blob = self.bucket.blob(blob_path)
  
-    def download(self, local_path: str) -> None:
-        if self.blob.exists():
-            self.blob.download_to_filename(local_path)
-        
-        # Always ensure valid DuckDB file exists
-        conn = duckdb.connect(local_path)
-        conn.close()
+    def _ensure_blob_exists(self) -> None:
+        """If blob doesn't exist → upload template DB"""
+        if not self.blob.exists():
+            if not os.path.exists(self.template_path):
+                raise FileNotFoundError(
+                    f"Template DB not found at {self.template_path}"
+                )
  
+            print("GCS blob not found. Uploading template DB...")
+ 
+            self.blob.upload_from_filename(self.template_path)
+ 
+    def download(self, local_path: str) -> None:
+        # Step 1: ensure blob exists
+        self._ensure_blob_exists()
+ 
+        # Step 2: download
+        self.blob.download_to_filename(local_path)
+
     def upload(self, local_path: str) -> None:
         self.blob.upload_from_filename(local_path)
  
@@ -72,9 +97,6 @@ def parse_uri(uri: str) -> tuple[str, str, str]:
     scheme = parsed.scheme
     bucket = parsed.netloc
     path = parsed.path.lstrip("/")
-
-    if scheme == "gs":
-        scheme = "gcs"
  
     return scheme, bucket, path
 
@@ -93,22 +115,24 @@ class DuckDBConnectionProxy:
 
  
 class DuckDBCloud:
-    def __init__(self, uri: str, credentials: storage.credentials.Credentials = None, read_only: bool = False, local_path: str = None):
+    def __init__(self, uri: str, credentials: "Credentials" = None, read_only: bool = False, local_path: str = None, template_path: str = None):
         self.uri = uri
         self.credentials = credentials
         self.read_only = read_only
         self.local_override_path = local_path
- 
+        self.template_path = template_path
+        
         scheme, bucket, path = parse_uri(uri)
+
+        if scheme not in ["gs", "s3", "file"]:
+            raise ValueError(f"Unsupported URI scheme: {scheme}")
  
-        if scheme == "gcs":
+        if scheme == "gs":
             self.backend = GCSBackend(bucket, path, credentials)
-        elif scheme == "s3":
+        if scheme == "s3":
             self.backend = S3Backend(bucket, path)
-        elif scheme == "file":
+        if scheme == "file":
             self.backend = LocalBackend(path)
-        else:
-            raise ValueError(f"Unsupported scheme: {scheme}")
 
         # Session state
         self._conn = None
@@ -134,12 +158,6 @@ class DuckDBCloud:
         except Exception as e:
             print(f"Error occurred while downloading: {e}")
             raise
- 
-        if not os.path.exists(self._local_path) or os.path.getsize(self._local_path) == 0:
-            print("Creating fresh DuckDB file at local path.")
-            conn = duckdb.connect(self._local_path)
-            conn.execute("CREATE TABLE IF NOT EXISTS __init (id INTEGER)")
-            conn.close()
         
         self._conn = duckdb.connect(self._local_path)
         return self._conn
@@ -186,7 +204,7 @@ class DuckDBCloud:
     # -------------------------------
  
     @contextmanager
-    def connect(self):
+    def _connect(self):
         with tempfile.NamedTemporaryFile(suffix=".duckdb", delete=False) as tmp:
             local_path = tmp.name
  
@@ -201,6 +219,27 @@ class DuckDBCloud:
             if not self.read_only:
                 self.backend.upload(local_path)
  
+        finally:
+            if os.path.exists(local_path):
+                os.remove(local_path)
+
+    @contextmanager
+    def connect(self):
+        """Context manager for one-shot connection."""
+        with tempfile.NamedTemporaryFile(suffix=".duckdb", delete=False) as tmp:
+            local_path = tmp.name
+        
+        try:
+            self.backend.download(local_path)
+            conn = duckdb.connect(local_path)
+ 
+            yield conn
+ 
+            conn.close()
+ 
+            if not self.read_only:
+                self.backend.upload(local_path)
+
         finally:
             if os.path.exists(local_path):
                 os.remove(local_path)
@@ -226,3 +265,6 @@ class DuckDBCloud:
     def list_tables(self) -> list[tuple]:
         return self.execute("SHOW TABLES")
 
+
+if __name__ == "__main__":
+    print(f"Project directory: {PROJECT_DIR}")

@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "altairant"
+version = "0.1.0"
+description = "A Python library that provides unified utilities for working with local and cloud-based data, including DuckDB database wrappers and file system abstractions for Google Cloud Storage (GCS). It enables seamless database operations, context-managed file access, and automatic synchronization between local and remote storage, with an extensible design for additional backends and features."
+readme = "README.MD"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [{name = "Sarbadal Pal"}]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "pandas",
+    "duckdb",
+    "google-cloud-storage",
+    "gcsfs"
+]
+ 
+[tool.setuptools.packages.find]
+where = ["."]

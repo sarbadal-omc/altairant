@@ -3,7 +3,10 @@ import tempfile
 import duckdb
 from google.oauth2 import service_account
 
-from duckstore.duckstore import (
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
+
+from gcs.duckstore.duckstore import (
     parse_uri,
     LocalBackend,
     GCSBackend,
@@ -15,7 +18,7 @@ class TestDuckDBCloud:
     JSON_KEY = ("/Users/sarbadal.pal/Library/CloudStorage/OneDrive-OneWorkplace/Documents/"
                "development-490607-06eae129a3e2.json")
     CREDS = service_account.Credentials.from_service_account_file(JSON_KEY)
-    URI = "gs://open-file-testing/demo.duckdb"
+    URI = "gs://open-file-testing/_db.duckdb"
     # LOCAL_URI = "file:///tmp/test.duckdb"
 
     def test_one_shot_execution(self):
@@ -23,6 +26,7 @@ class TestDuckDBCloud:
         def test_execute(self):
             print("Testing one-shot execution...")
             db = DuckDBCloud(self.URI, credentials=self.CREDS, read_only=False)
+            db.execute("DROP TABLE IF EXISTS test")
             db.execute("CREATE TABLE IF NOT EXISTS test AS SELECT 1 AS id, 'foo' AS name")
             db.execute("INSERT INTO test VALUES (2, 'bar')")
             results = db.execute("SELECT * FROM test")
