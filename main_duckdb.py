@@ -3,7 +3,8 @@ from google.oauth2 import service_account
 
 from altairant.gcs.duckstore.duckstore import DuckDBCloud
 
-JSON_KEY = "/Users/sarbadal.pal/Library/CloudStorage/OneDrive-OneWorkplace/Documents/development-490607-06eae129a3e2.json"
+JSON_KEY = ("/Users/sarbadal.pal/Library/CloudStorage/OneDrive-OneWorkplace/Documents/"
+           "development-490607-06eae129a3e2.json")
 creds = service_account.Credentials.from_service_account_file(JSON_KEY)
 
 
