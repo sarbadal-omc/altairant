@@ -4,7 +4,7 @@ import io
 
  
 @contextmanager
-def gcs_open(gcs_path: str, mode: str = "r", credentials: storage.credentials.Credentials = None) -> io.IOBase:
+def gcs_open(gcs_path: str, mode: str = "r", credentials: "storage.credentials.Credentials" = None) -> io.IOBase:
     """
     Open a GCS file like built-in open()
  
