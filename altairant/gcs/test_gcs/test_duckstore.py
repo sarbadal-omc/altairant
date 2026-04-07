@@ -19,7 +19,6 @@ class TestDuckDBCloud:
                "development-490607-06eae129a3e2.json")
     CREDS = service_account.Credentials.from_service_account_file(JSON_KEY)
     URI = "gs://open-file-testing/_db.duckdb"
-    # LOCAL_URI = "file:///tmp/test.duckdb"
 
     def test_one_shot_execution(self):
 

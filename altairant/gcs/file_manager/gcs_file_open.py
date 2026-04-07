@@ -1,10 +1,17 @@
+"""
+This module provides a context manager to open GCS files using the 
+Google Cloud Storage client library. It allows you to read and write GCS files 
+as if they were local files, abstracting away the complexities of interacting 
+with GCS directly.
+"""
 from contextlib import contextmanager
+from google.auth.credentials import Credentials
 from google.cloud import storage
 import io
 
  
 @contextmanager
-def gcs_open(gcs_path: str, mode: str = "r", credentials: "storage.credentials.Credentials" = None) -> io.IOBase:
+def gcs_open(gcs_path: str, mode: str = "r", credentials: Credentials = None) -> io.IOBase:
     """
     Open a GCS file like built-in open()
  

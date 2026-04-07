@@ -1,6 +1,8 @@
+"""This module defines the JsonToDataFrameLoader class, which is responsible for 
+loading JSON data into a DataFrame using registered schema handlers."""
 import json
-from altairant.json_df_loader.handlers.base_handler import BaseSchemaHandler
-from altairant.json_df_loader.handlers.registry import register_all_handlers
+from .handlers.base_handler import BaseSchemaHandler
+from .handlers.registry import register_all_handlers
  
  
 class JsonToDataFrameLoader:

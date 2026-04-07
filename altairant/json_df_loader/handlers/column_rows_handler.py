@@ -1,3 +1,23 @@
+"""
+This module defines a handler for the "column-rows" schema, which represents a 
+DataFrame as a dictionary with "columns" and "rows" keys. The "columns"
+key contains metadata about the columns (name and dtype), while the "rows" key
+contains the actual data as a list of lists. This handler can convert such a
+structure into a pandas DataFrame, applying appropriate data types based on the provided metadata.
+
+Example input:
+{
+    "columns": [
+        {"name": "id", "dtype": "int64"},
+        {"name": "name", "dtype": "string"},
+        {"name": "value", "dtype": "float64"}
+    ],
+    "rows": [
+        [1, "foo", 3.14],
+        [2, "bar", 2.71]
+    ]
+}
+"""
 import pandas as pd
 from .base_handler import BaseSchemaHandler
  
@@ -40,3 +60,22 @@ class ColumnRowsHandler(BaseSchemaHandler):
                     pass
  
         return df
+
+    def schema_name(self) -> str:
+        return "Column-Rows Format"
+
+    def description(self) -> str:
+        return "A format where data is represented as a dictionary with 'columns' metadata and 'rows' data."
+
+    def example(self) -> dict:
+        return {
+            "columns": [
+                {"name": "id", "dtype": "int64"},
+                {"name": "name", "dtype": "string"},
+                {"name": "value", "dtype": "float64"}
+            ],
+            "rows": [
+                [1, "foo", 3.14],
+                [2, "bar", 2.71]
+            ]
+        }

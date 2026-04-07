@@ -12,6 +12,7 @@ from contextlib import contextmanager
 from urllib.parse import urlparse
  
 import gcsfs
+from google.auth.credentials import Credentials
 from google.cloud import storage
 
 # Assuming this file is located at altairant/gcs/duckstore/duckstore.py, 
@@ -53,7 +54,7 @@ class LocalBackend(BaseStorageBackend):
  
 
 class GCSBackend(BaseStorageBackend):
-    def __init__(self, bucket: str, blob_path: str, credentials: "Credentials" = None, template_path: str = None):
+    def __init__(self, bucket: str, blob_path: str, credentials: Credentials = None, template_path: str = None):
         self.client = storage.Client(credentials=credentials) if credentials else storage.Client()
         self.template_path = template_path or os.path.join(PROJECT_DIR, "gcs/duckstore/_temp.duckdb")
         self.bucket = self.client.bucket(bucket)
@@ -115,7 +116,7 @@ class DuckDBConnectionProxy:
 
  
 class DuckDBCloud:
-    def __init__(self, uri: str, credentials: "Credentials" = None, read_only: bool = False, local_path: str = None, template_path: str = None):
+    def __init__(self, uri: str, credentials: Credentials = None, read_only: bool = False, local_path: str = None, template_path: str = None):
         self.uri = uri
         self.credentials = credentials
         self.read_only = read_only

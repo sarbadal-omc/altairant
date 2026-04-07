@@ -1,10 +1,16 @@
+"""
+This module defines a GCSFileSystem class that provides a simple interface for 
+reading and writing files to Google Cloud Storage (GCS) using the 
+Google Cloud Storage client library.
+"""
 from contextlib import contextmanager
+from google.auth.credentials import Credentials
 from google.cloud import storage
 import io
 
 
 class GCSFileSystem:
-    def __init__(self, credentials=None):
+    def __init__(self, credentials: Credentials = None):
         self.client = storage.Client(credentials=credentials)
  
     @contextmanager
