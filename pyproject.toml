@@ -28,6 +28,11 @@ dependencies = [
     "gcsfs"
 ]
 
+[project.urls]
+homepage = "https://github.com/sarbadal-omc/altairant"
+repository = "https://github.com/sarbadal-omc/altairant"
+issues = "https://github.com/sarbadal-omc/altairant/issues"
+
 [tool.setuptools]
 packages = ["altairant"]
 include-package-data = true
