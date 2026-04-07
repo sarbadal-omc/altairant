@@ -1,8 +1,9 @@
 .venv
 __pycache__
-altairant/pypi_api_token.txt
+*.tomal
 dist
 build
+.pypirc
 *.egg-info
 *.pyc
 *.pyo
