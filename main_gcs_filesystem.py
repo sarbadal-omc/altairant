@@ -1,8 +1,10 @@
-from file_manager.gcs_file_system import GCSFileSystem
+# from altairant.gcs.file_manager.gcs_file_system import GCSFileSystem
 from google.oauth2 import service_account
+from altairant.gcs import GCSFileSystem
 
 
-JSON_KEY = ("/path/to/service_account.json")  # Update with your actual path to the service account JSON key
+JSON_KEY = ("/Users/sarbadal.pal/Library/CloudStorage/OneDrive-OneWorkplace/Documents/"
+           "development-490607-06eae129a3e2.json")  # Update with your actual path to the service account JSON key
 CREDS = service_account.Credentials.from_service_account_file(JSON_KEY)
 
 
@@ -17,7 +19,7 @@ def example_usage_gcs_file_system():
     with gcs_fs.open(write_to_path, mode="w") as f:
         f.write("Hello, GCS! This is a test write.")
 
-    with open("test_write_fileSystem.txt", "r") as f:
+    with open("test_file_gcs.txt", "r") as f:
         print(f.read())
     
     # Reading from GCS
@@ -32,7 +34,7 @@ def example_usage_cloud_duckstore():
     import duckdb
     from google.oauth2 import service_account
 
-    from duckstore.duckstore import (
+    from altairant.gcs.duckstore.duckstore import (
         parse_uri,
         LocalBackend,
         GCSBackend,
