@@ -1,7 +1,6 @@
 .venv
 altairant/pypi_api_token.txt
 __pycache__
-altairant/pypi_api_token.txt
 dist
 build
 *.egg-info
