@@ -1,4 +1,0 @@
-google-cloud-storage
-gcsfs
-duckdb
-pandas
