@@ -1,5 +1,5 @@
 .venv
-altairant/_pypi_api_token.txt
+altairant/pypi_api_token.txt
 __pycache__
 dist
 build
