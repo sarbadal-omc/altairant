@@ -12,7 +12,7 @@ for Google Cloud Storage (GCS). It enables seamless database operations,
 context-managed file access, and automatic synchronization between local and 
 remote storage, with an extensible design for additional backends and features.
 """
-readme = "README.md"
+readme = "README.MD"
 requires-python = ">=3.8"
 license = {text = "MIT"}
 authors = [{name = "Sarbadal Pal"}]
@@ -27,6 +27,10 @@ dependencies = [
     "google-cloud-storage",
     "gcsfs"
 ]
+
+[tool.setuptools]
+packages = ["altairant"]
+include-package-data = true
  
 [tool.setuptools.packages.find]
 where = ["."]
