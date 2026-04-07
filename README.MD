@@ -46,15 +46,43 @@ Supported JSON schemas include:
 ```python
 from altairant.gcs.duckstore import DuckDBStore
 
-# Example usage (assuming GCS setup)
+# One short execution
+JSON_KEY = "path/to/gcp_key.json"
+CREDS = service_account.Credentials.from_service_account_file(JSON_KEY)
+URI = "gs://your-bucket-name/db.duckdb"
+
+db = DuckDBCloud(self.URI, credentials=self.CREDS, read_only=False)
+db.execute("CREATE TABLE IF NOT EXISTS test AS SELECT 1 AS id, 'foo' AS name")
+results = db.execute("SELECT * FROM test")
+
+# With session
+with db.session() as conn:
+    conn.execute("CREATE TABLE IF NOT EXISTS session_test AS SELECT 3 AS id, 'baz' AS name")
+    conn.execute("INSERT INTO session_test VALUES (4, 'qux')")
+    results = conn.execute("SELECT * FROM session_test").fetchall()
 ```
 
 ### GCS File System
 
 ```python
+from google.oauth2 import service_account
 from altairant.gcs.file_manager import GCSFileManager
 
-# Example usage
+JSON_KEY = "path/to/gcp_key.json"
+CREDS = service_account.Credentials.from_service_account_file(JSON_KEY)
+
+gcs_file_path = "gs://your-bucket-name/test_file_gcs.txt"
+write_to_file_path = "gs://your-bucket-name/test_write_fileSystem.txt"
+
+gcs_fs = GCSFileSystem(credentials=self.CREDS)
+with gcs_fs.open(self.gcs_path, mode="r") as f:
+    content = f.read()
+    print(content)
+
+test_content = "Hello, GCS! This is a test write."
+    with gcs_fs.open(write_to_file_path, mode="w") as f:
+        f.write(test_content)
+
 ```
 
 ## Requirements
