@@ -263,7 +263,9 @@ class DuckDBCloud:
     def create_table(self, query: str) -> list[tuple]:
         return self.execute(query)
  
-    def list_tables(self) -> list[tuple]:
+    def list_tables(self, to_df: bool = False) -> list[tuple]:
+        if to_df:
+            return self.query_df("SHOW TABLES")
         return self.execute("SHOW TABLES")
 
 
