@@ -40,6 +40,7 @@ Supported JSON schemas include:
 - Columnar format (dict of lists)
 - Column-rows format (with metadata)
 - Nested data under a "data" key
+- CSV Reader 
 
 ### DuckDB Wrapper
 
