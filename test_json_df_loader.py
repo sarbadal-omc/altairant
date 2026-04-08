@@ -2,11 +2,11 @@ import json
 import os
 
 from google.oauth2 import service_account
-from .json_df_loader import JsonToDataFrameLoader
+from altairant.json_df_loader import JsonToDataFrameLoader
  
 
 BASE_DIR = os.path.dirname(__file__)
-DATA_DIR = os.path.join(BASE_DIR, "data")
+DATA_DIR = os.path.join(BASE_DIR, "altairant/json_df_loader/manual_tests/data")
  
  
 def load_json(filename):
@@ -115,12 +115,12 @@ def run_all_tests():
  
     print("\nRunning Manual Tests...\n")
  
-    # test_list_of_dicts(loader)
-    # test_nested_data(loader)
-    # test_columnar(loader)
+    test_list_of_dicts(loader)
+    test_nested_data(loader)
+    test_columnar(loader)
     test_column_rows(loader)
     test_csv_handler(loader)
-    # test_invalid_schema(loader)
+    test_invalid_schema(loader)
  
     print("\nDone.\n")
  

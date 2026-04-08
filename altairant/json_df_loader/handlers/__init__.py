@@ -7,6 +7,8 @@ from .list_handler import ListOfDictsHandler
 from .nested_handler import NestedDataKeyHandler
 from .columnar_handler import ColumnarHandler
 from .column_rows_handler import ColumnRowsHandler
+from .csv_handler import CSVHandler
+
 from .inspector import list_available_handlers, find_matching_handler, print_available_handlers
 
 
@@ -15,6 +17,7 @@ __all__ = [
     "NestedDataKeyHandler", 
     "ColumnarHandler",
     "ColumnRowsHandler",
+    "CSVHandler",
 
     "list_available_handlers",
     "find_matching_handler",

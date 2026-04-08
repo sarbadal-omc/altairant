@@ -4,6 +4,7 @@ from .list_handler import ListOfDictsHandler
 from .nested_handler import NestedDataKeyHandler
 from .columnar_handler import ColumnarHandler
 from .column_rows_handler import ColumnRowsHandler
+from .csv_handler import CSVHandler
  
  
 def register_all_handlers():
@@ -14,3 +15,4 @@ def register_all_handlers():
     BaseSchemaHandler.register(NestedDataKeyHandler())
     BaseSchemaHandler.register(ColumnRowsHandler())
     BaseSchemaHandler.register(ColumnarHandler())
+    BaseSchemaHandler.register(CSVHandler())

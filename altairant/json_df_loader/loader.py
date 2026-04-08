@@ -6,18 +6,20 @@ from .handlers.registry import register_all_handlers
  
  
 class JsonToDataFrameLoader:
-    def __init__(self):
+    def __init__(self, **context):
+        """Accepts optional gcs_reader dependency"""
+        self.context = context or {}
         # Explicit registration
         register_all_handlers()
  
         self.handlers = BaseSchemaHandler.get_all_handlers()
  
         # Debug (optional)
-        # print("Registered handlers:")
-        # for h in self.handlers:
-        #     print("-", h.__class__.__name__)
+        print("Registered handlers:")
+        for h in self.handlers:
+            print("-", h.__class__.__name__)
  
-    def load(self, json_input):
+    def load(self, json_input: str | dict) -> "pd.DataFrame":
         if isinstance(json_input, str):
             data = json.loads(json_input)
         else:
@@ -26,6 +28,6 @@ class JsonToDataFrameLoader:
         for handler in self.handlers:
             if handler.can_handle(data):
                 print(f"Using handler: {handler.__class__.__name__}")
-                return handler.to_dataframe(data)
+                return handler.to_dataframe(data, **self.context)
  
         raise ValueError("No suitable schema handler found.")

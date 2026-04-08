@@ -1,6 +1,6 @@
-from json_df_loader.handlers.inspector import list_available_handlers, print_available_handlers
+from altairant.json_df_loader.handlers.inspector import list_available_handlers, print_available_handlers
 # from json_df_loader.handlers import list_available_handlers, print_available_handlers
-from json_df_loader import JsonToDataFrameLoader
+from altairant.json_df_loader import JsonToDataFrameLoader
 
 
 def main() -> None:

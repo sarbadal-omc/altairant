@@ -13,10 +13,10 @@ from .base_handler import BaseSchemaHandler
 
 
 class ListOfDictsHandler(BaseSchemaHandler):
-    def can_handle(self, data):
+    def can_handle(self, data: list | dict) -> bool:
         return isinstance(data, list) and all(isinstance(x, dict) for x in data)
  
-    def to_dataframe(self, data):
+    def to_dataframe(self, data: list[dict], **context) -> pd.DataFrame:
         return pd.DataFrame(data)
 
     def schema_name(self) -> str:

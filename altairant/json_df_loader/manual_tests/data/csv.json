@@ -1,0 +1,8 @@
+{
+    "type": "csv",
+    "path": "gs://open-file-testing/sample.csv",
+    "delimiter": ",",
+    "read_csv_kwargs": {
+        "header": 0
+    }
+}

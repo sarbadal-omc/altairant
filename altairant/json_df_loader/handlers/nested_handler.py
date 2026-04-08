@@ -19,7 +19,7 @@ class NestedDataKeyHandler(BaseSchemaHandler):
     def can_handle(self, data):
         return isinstance(data, dict) and "data" in data
  
-    def to_dataframe(self, data):
+    def to_dataframe(self, data, **context) -> pd.DataFrame:
         return pd.json_normalize(data["data"])
 
     def schema_name(self) -> str:

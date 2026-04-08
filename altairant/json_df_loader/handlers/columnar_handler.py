@@ -20,7 +20,7 @@ class ColumnarHandler(BaseSchemaHandler):
     def can_handle(self, data):
         return isinstance(data, dict) and all(isinstance(v, list) for v in data.values())
  
-    def to_dataframe(self, data):
+    def to_dataframe(self, data: dict, **context) -> pd.DataFrame:
         return pd.DataFrame(data)
 
     def schema_name(self) -> str:

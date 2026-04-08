@@ -14,24 +14,30 @@ class BaseSchemaHandler(ABC):
  
     @classmethod
     def register(cls, handler):
+        """Register a new handler instance. The handler must be an instance of BaseSchemaHandler."""
         if not isinstance(handler, BaseSchemaHandler):
             raise TypeError("Handler must be an instance of BaseSchemaHandler")
         cls._registry.append(handler)
  
     @classmethod
     def clear_registry(cls):
+        """Clear all registered handlers. Useful for testing or resetting state."""
         cls._registry = []
  
     @classmethod
     def get_all_handlers(cls):
+        """Return a list of all registered handler instances."""
         return cls._registry
  
     @abstractmethod
     def can_handle(self, data: dict | list) -> bool:
+        """Determine if this handler can process the given data."""
         pass
  
     @abstractmethod
-    def to_dataframe(self, data: dict | list) -> pd.DataFrame:
+    def to_dataframe(self, data: dict | list, **context) -> pd.DataFrame:
+        """Convert the input data to a pandas DataFrame. The context can include
+        additional dependencies or configuration needed for processing."""
         pass
 
     @abstractmethod

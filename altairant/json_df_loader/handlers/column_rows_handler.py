@@ -32,7 +32,7 @@ class ColumnRowsHandler(BaseSchemaHandler):
             and isinstance(data["rows"], list)
         )
  
-    def to_dataframe(self, data):
+    def to_dataframe(self, data: dict, **context) -> pd.DataFrame:
         columns_meta = data["columns"]
         rows = data["rows"]
  
